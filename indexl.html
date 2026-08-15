@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyHealth Passport | 多國語言隨身電子病歷</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==================== 豐富色彩與 Tiffany 主題變數 ==================== */
+        :root {
+            --primary: #00A896;
+            --primary-dark: #028090;
+            --primary-light: #E8F6F5;
+            --primary-gradient: linear-gradient(135deg, #00A896 0%, #028090 100%);
+            
+            /* 各區塊專屬色彩 */
+            --color-personal: #028090;
+            --bg-personal: #E0F2F1;
+            
+            --color-alert: #D32F2F;
+            --bg-alert: #FFEBEE;
+            
+            --color-history: #1976D2;
+            --bg-history: #E3F2FD;
+            
+            --color-surgery: #7B1FA2;
+            --bg-surgery: #F3E5F5;
+            
+            --color-med: #00796B;
+            --bg-med: #E0F2F1;
+            
+            --color-family: #E65100;
+            --bg-family: #FFF3E0;
+            
+            --color-vaccine: #388E3C;
+            --bg-vaccine: #E8F5E9;
+
+            --bg-body: #F0F7F7;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #1C2D2B;
+            --text-sub: #5A7572;
+            --border-color: #D2E9E6;
+            
+            --radius-lg: 20px;
+            --radius-sm: 10px;
+            --shadow-soft: 0 8px 25px rgba(0, 168, 150, 0.08);
+            --shadow-hover: 0 12px 30px rgba(0, 168, 150, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ==================== 頁首 (Header) ==================== */
+        header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 32px 0 24px 0;
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            box-shadow: 0 10px 25px rgba(0, 168, 150, 0.2);
+            margin-bottom: 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 0.9rem;
+            opacity: 0.92;
+            margin-top: 4px;
+        }
+
+        .top-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .lang-select-wrapper {
+            background: rgba(255, 255, 255, 0.22);
+            padding: 7px 14px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        select#langSelect {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        select#langSelect option {
+            color: var(--text-main);
+            background: white;
+        }
+
+        .btn-top {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary-dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .btn-top:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* ==================== 分頁頁籤 (Tabs Nav) ==================== */
+        .tabs-nav {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .tabs-nav::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .tab-btn {
+            background: #ffffff;
+            color: var(--text-sub);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-dark);
+            border-color: var(--primary);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 168, 150, 0.25);
+        }
+
+        /* ==================== 多色彩卡片樣式 (Colorful Cards) ==================== */
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 26px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* 個別卡片主題色彩套用 */
+        .card-personal { border-left: 6px solid var(--color-personal); }
+        .card-personal .card-icon { background: var(--bg-personal); color: var(--color-personal); }
+        .card-personal .card-title { color: var(--color-personal); }
+
+        .card-alert { border-left: 6px solid var(--color-alert); }
+        .card-alert .card-icon { background: var(--bg-alert); color: var(--color-alert); }
+        .card-alert .card-title { color: var(--color-alert); }
+
+        .card-history { border-left: 6px solid var(--color-history); }
+        .card-history .card-icon { background: var(--bg-history); color: var(--color-history); }
+        .card-history .card-title { color: var(--color-history); }
+
+        .card-surgery { border-left: 6px solid var(--color-surgery); }
+        .card-surgery .card-icon { background: var(--bg-surgery); color: var(--color-surgery); }
+        .card-surgery .card-title { color: var(--color-surgery); }
+
+        .card-med { border-left: 6px solid var(--color-med); }
+        .card-med .card-icon { background: var(--bg-med); color: var(--color-med); }
+        .card-med .card-title { color: var(--color-med); }
+
+        .card-family { border-left: 6px solid var(--color-family); }
+        .card-family .card-icon { background: var(--bg-family); color: var(--color-family); }
+        .card-family .card-title { color: var(--color-family); }
+
+        .card-vaccine { border-left: 6px solid var(--color-vaccine); }
+        .card-vaccine .card-icon { background: var(--bg-vaccine); color: var(--color-vaccine); }
+        .card-vaccine .card-title { color: var(--color-vaccine); }
+
+        /* ==================== 表格與編輯輸入框 ==================== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+        }
+
+        .info-item {
+            background-color: #FAFDFC;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .info-label {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+            min-height: 24px;
+        }
+
+        input.edit-field {
+            width: 100%;
+            padding: 6px 10px;
+            font-size: 0.92rem;
+            border: 1.5px solid var(--primary);
+            border-radius: 6px;
+            outline: none;
+            background: #ffffff;
+            color: var(--text-main);
+        }
+
+        ul.medical-list {
+            list-style: none;
+        }
+
+        ul.medical-list li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        ul.medical-list li:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        ul.medical-list li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 4px;
+            top: -4px;
+        }
+
+        .list-content {
+            flex-grow: 1;
+            padding-right: 12px;
+        }
+
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            border: 1px dashed var(--primary);
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-del {
+            background: #FFEBEE;
+            color: #C62828;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+
+        .btn-del:hover {
+            background: #E53935;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0 10px 0;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+        }
+
+        @media print {
+            header, .top-controls, .tabs-nav, .btn-add, .btn-del, footer {
+                display: none !important;
+            }
+            .tab-pane {
+                display: block !important;
+            }
+            body {
+                background: white;
+                padding: 0;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <div class="header-title">
+                <h1>🩺 <span data-i18n="appTitle">隨身電子病歷</span></h1>
+                <p data-i18n="appSub">MyHealth Passport - Emergency Medical Card</p>
+            </div>
+            <div class="top-controls">
+                <button class="btn-top" id="toggleEditBtn" onclick="toggleGlobalEdit()">✏️ <span data-i18n="btnEditAll">編輯所有資料</span></button>
+                <button class="btn-top" onclick="printAllTabs()">🖨️ <span data-i18n="btnPrint">列印 / 存為 PDF</span></button>
+                <div class="lang-select-wrapper">
+                    <span>🌐</span>
+                    <select id="langSelect" onchange="changeLanguage(this.value)">
+                        <option value="zh">繁體中文</option>
+                        <option value="en">English</option>
+                        <option value="ja">日本語</option>
+                        <option value="ko">한국어</option>
+                        <option value="vi">Tiếng Việt</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 分頁導覽按鈕 (Tabs Bar) -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('tab-1', this)" data-i18n="tabBasic">🚨 基本與緊急</button>
+            <button class="tab-btn" onclick="switchTab('tab-2', this)" data-i18n="tabMedical">🏥 疾病與手術</button>
+            <button class="tab-btn" onclick="switchTab('tab-3', this)" data-i18n="tabMedication">💊 用藥與防護</button>
+            <button class="tab-btn" onclick="switchTab('tab-4', this)" data-i18n="tabFamily">🧬 家族病史</button>
+            <button class="tab-btn" onclick="switchTab('tab-all', this)" data-i18n="tabAll">📋 全部顯示</button>
+        </div>
+
+        <!-- ==================== Tab 1: 基本與緊急 ==================== -->
+        <div id="tab-1" class="tab-pane active">
+            <!-- 1. 基本個人資料 -->
+            <div class="card card-personal">
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <div class="card-icon">👤</div>
+                        <h2 class="card-title" data-i18n="secPersonal">基本個人資料</h2>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label" data-i18n="lblName">姓名</div>
+                        <div class="info-value" id="val_name">王小明 (Wang, Xiao-Ming)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label" data-i18n="lblDOB">出生日期</div>
+                        <div class="info-value" id="val_dob">1990 / 05 / 15</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label" data-i18n="lblBlood">血型</div>
+                        <div class="info-value" id="val_blood">O 型 (Rh+)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label" data-i18n="lblContact">緊急聯絡人</div>
+                        <div class="info-value" id="val_contact">+886 912-345-678 (家屬)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 過敏史 (紅色醒目) -->
+            <div class="card card-alert">
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <div class="card-icon">⚠️</div>
+                        <h2 class="card-title" data-i18n="secAllergies">過敏史 (Allergies)</h2>
+                    </div>
+                </div>
+                <ul class="medical-list" id="list_allergies"></ul>
+                <button class="btn-add edit-only" style="display:none;" onclick="addItem('allergies')">➕ <span data-i18n="btnAdd">新增項目</span></button>
+            </div>
+        </div>
+
+        <!-- ==================== Tab 2: 疾病與手術 ==================== -->
+        <div id="tab-2" class="tab-pane">
+            <!-- 3. 疾病史 / 慢性病史 -->
+            <div class="card card-history">
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <div class="card-icon">🏥</div>
+                        <h2 class="card-title" data-i18n="secHistory">疾病史 / 慢性病史</h2>
+                    </div>
+                </div>
+                <ul class="medical-list" id="list_history"></ul>
+                <button class="btn-add edit-only" style="display:none;" onclick="addItem('history')">➕ <span data-i18n="btnAdd">新增項目</span></button>
+            </div>
+
+            <!-- 4. 手術與住院史 -->
+            <div class="card card-surgery">
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <div class="card-icon">✂️</div>
+                        <h2 class="card-title" data-i18n="secSurgery">手術與住院史</h2>
+                    </div>
+                </div>
+                <ul class="medical-list" id="list_surgery"></ul>
+                <button class="btn-add edit-only" style="display:none;" onclick="addItem('surgery')">➕ <span data-i18n="btnAdd">新增項目</span></button>
+            </div>
+        </div>
+
+        <!-- ==================== Tab 3: 用藥與防護 ==================== -->
+        <div id="tab-3" class="tab-pane">
+            <!-- 5. 目前用藥史 -->
+            <div class="card card-med">
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <div class="card-icon">💊</div>
+                        <h2 class="card-title" data-i18n="secMedication">目前用藥史</h2>
+                    </div>
+                </div>
+                <ul class="medical-list" id="list_medication"></ul>
+                <button class="btn-add edit-only" style="display:none;" onclick="addItem('medication')">➕ <span data-i18n="btnAdd">新增項目</span></button>
+            </div>
+
+            <!-- 6. 疫苗接種紀錄 -->
+            <div class="card card-vaccine">
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <div class="card-icon">💉</div>
+                        <h2 class="card-title" data-i18n="secVaccine">疫苗接種紀錄</h2>
+                    </div>
+                </div>
+                <ul class="medical-list" id="list_vaccine"></ul>
+                <button class="btn-add edit-only" style="display:none;" onclick="addItem('vaccine')">➕ <span data-i18n="btnAdd">新增項目</span></button>
+            </div>
+        </div>
+
+        <!-- ==================== Tab 4: 家族病史 ==================== -->
+        <div id="tab-4" class="tab-pane">
+            <!-- 7. 家族病史 -->
+            <div class="card card-family">
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <div class="card-icon">🧬</div>
+                        <h2 class="card-title" data-i18n="secFamily">家族病史</h2>
+                    </div>
+                </div>
+                <ul class="medical-list" id="list_family"></ul>
+                <button class="btn-add edit-only" style="display:none;" onclick="addItem('family')">➕ <span data-i18n="btnAdd">新增項目</span></button>
+            </div>
+        </div>
+
+        <!-- ==================== Tab ALL: 全部顯示 (容器) ==================== -->
+        <div id="tab-all" class="tab-pane">
+            <!-- 此區塊會在選擇全部顯示時，透過 JS 動態集合顯示所有卡片 -->
+        </div>
+
+    </div>
+
+    <footer>
+        <p data-i18n="footerText">MyHealth Passport - 請將此頁面截圖或儲存於手機，以備海外醫療求助時使用。</p>
+        <button style="background:none; border:none; color:var(--text-sub); text-decoration:underline; font-size:0.75rem; cursor:pointer; margin-top:8px;" onclick="resetDefaultData()">重置為預設資料</button>
+    </footer>
+
+    <!-- ==================== JavaScript 控制邏輯 ==================== -->
+    <script>
+        let isEditing = false;
+        let currentTabId = 'tab-1';
+
+        // 預設病歷資料庫
+        const defaultData = {
+            personal: {
+                name: "王小明 (Wang, Xiao-Ming)",
+                dob: "1990 / 05 / 15",
+                blood: "O 型 (Rh+)",
+                contact: "+886 912-345-678 (家屬)"
+            },
+            lists: {
+                allergies: ["盤尼西林 (Penicillin) - 會引發蕁麻疹", "海鮮 / 蝦蟹 (Shellfish)"],
+                history: ["原發性高血壓 (Essential Hypertension) - 診斷於 2020 年", "輕微氣喘 (Mild Asthma) - 氣候變化時易發作"],
+                surgery: ["2018 年：腹腔鏡闌尾切除術 (Laparoscopic Appendectomy)", "2015 年：左手腕骨折固定手術"],
+                medication: ["脈優 (Amlodipine 5mg) - 每日一次，每次一顆 (降血壓)", "備勞喘吸入劑 (Ventolin Inhaler) - 需要時使用 (氣喘備用)"],
+                family: ["父親：第二型糖尿病、高血壓病史", "母親：無重大慢性病史"],
+                vaccine: ["COVID-19 疫苗：已完成 4 劑接種 (mRNA)", "破傷風疫苗 (Tetanus)：2021 年完成追加劑注射"]
+            }
+        };
+
+        let appData = JSON.parse(localStorage.getItem('myHealthDataTabs')) || defaultData;
+
+        // 分頁切換邏輯
+        function switchTab(tabId, btn) {
+            currentTabId = tabId;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+            if (btn) btn.classList.add('active');
+
+            if (tabId === 'tab-all') {
+                const allPane = document.getElementById('tab-all');
+                allPane.innerHTML = '';
+                // 將 1~4 區塊的卡片複製至 Tab-all 集中顯示
+                ['tab-1', 'tab-2', 'tab-3', 'tab-4'].forEach(id => {
+                    const pane = document.getElementById(id);
+                    allPane.innerHTML += pane.innerHTML;
+                });
+                allPane.classList.add('active');
+            } else {
+                document.getElementById(tabId).classList.add('active');
+            }
+        }
+
+        // 畫面資料渲染
+        function renderData() {
+            document.getElementById('val_name').textContent = appData.personal.name;
+            document.getElementById('val_dob').textContent = appData.personal.dob;
+            document.getElementById('val_blood').textContent = appData.personal.blood;
+            document.getElementById('val_contact').textContent = appData.personal.contact;
+
+            Object.keys(appData.lists).forEach(key => {
+                const ul = document.getElementById('list_' + key);
+                if (ul) {
+                    ul.innerHTML = '';
+                    appData.lists[key].forEach((item, index) => {
+                        const li = document.createElement('li');
+                        if (isEditing) {
+                            li.innerHTML = `
+                                <div class="list-content">
+                                    <input type="text" class="edit-field" value="${item}" onchange="updateItem('${key}', ${index}, this.value)">
+                                </div>
+                                <button class="btn-del" onclick="deleteItem('${key}', ${index})">✕ 刪除</button>
+                            `;
+                        } else {
+                            li.innerHTML = `<div class="list-content">${item}</div>`;
+                        }
+                        ul.appendChild(li);
+                    });
+                }
+            });
+
+            document.querySelectorAll('.edit-only').forEach(el => {
+                el.style.display = isEditing ? 'inline-flex' : 'none';
+            });
+
+            // 若目前在「全部顯示」分頁，同步更新
+            if (currentTabId === 'tab-all') {
+                switchTab('tab-all', document.querySelector('.tabs-nav .tab-btn:last-child'));
+            }
+        }
+
+        // 切換編輯模式
+        function toggleGlobalEdit() {
+            isEditing = !isEditing;
+            const btn = document.getElementById('toggleEditBtn');
+            const lang = document.getElementById('langSelect').value;
+
+            if (isEditing) {
+                document.getElementById('val_name').innerHTML = `<input type="text" class="edit-field" id="input_name" value="${appData.personal.name}">`;
+                document.getElementById('val_dob').innerHTML = `<input type="text" class="edit-field" id="input_dob" value="${appData.personal.dob}">`;
+                document.getElementById('val_blood').innerHTML = `<input type="text" class="edit-field" id="input_blood" value="${appData.personal.blood}">`;
+                document.getElementById('val_contact').innerHTML = `<input type="text" class="edit-field" id="input_contact" value="${appData.personal.contact}">`;
+                
+                btn.innerHTML = '💾 <span>' + (translations[lang]?.btnSave || '儲存所有資料') + '</span>';
+                btn.style.background = '#028090';
+                btn.style.color = '#ffffff';
+            } else {
+                appData.personal.name = document.getElementById('input_name').value;
+                appData.personal.dob = document.getElementById('input_dob').value;
+                appData.personal.blood = document.getElementById('input_blood').value;
+                appData.personal.contact = document.getElementById('input_contact').value;
+                
+                saveData();
+
+                btn.innerHTML = '✏️ <span>' + (translations[lang]?.btnEditAll || '編輯所有資料') + '</span>';
+                btn.style.background = 'rgba(255, 255, 255, 0.95)';
+                btn.style.color = 'var(--primary-dark)';
+            }
+            renderData();
+        }
+
+        function updateItem(key, index, val) {
+            appData.lists[key][index] = val;
+            saveData();
+        }
+
+        function addItem(key) {
+            appData.lists[key].push('新紀錄項目...');
+            saveData();
+            renderData();
+        }
+
+        function deleteItem(key, index) {
+            appData.lists[key].splice(index, 1);
+            saveData();
+            renderData();
+        }
+
+        function saveData() {
+            localStorage.setItem('myHealthDataTabs', JSON.stringify(appData));
+        }
+
+        function resetDefaultData() {
+            if (confirm('確定要將所有資料重置為預設範例嗎？')) {
+                localStorage.removeItem('myHealthDataTabs');
+                appData = JSON.parse(JSON.stringify(defaultData));
+                isEditing = false;
+                renderData();
+            }
+        }
+
+        function printAllTabs() {
+            switchTab('tab-all', document.querySelector('.tabs-nav .tab-btn:last-child'));
+            setTimeout(() => { window.print(); }, 300);
+        }
+
+        // 語系字典
+        const translations = {
+            zh: {
+                appTitle: "隨身電子病歷", appSub: "MyHealth Passport - 緊急醫療資訊卡",
+                btnEditAll: "編輯所有資料", btnSave: "儲存所有資料", btnPrint: "列印 / 存為 PDF", btnAdd: "新增項目",
+                tabBasic: "🚨 基本與緊急", tabMedical: "🏥 疾病與手術", tabMedication: "💊 用藥與防護", tabFamily: "🧬 家族病史", tabAll: "📋 全部顯示",
+                secPersonal: "基本個人資料", lblName: "姓名", lblDOB: "出生日期", lblBlood: "血型", lblContact: "緊急聯絡人",
+                secAllergies: "過敏史 (Allergies)", secHistory: "疾病史 / 慢性病史", secSurgery: "手術與住院史",
+                secMedication: "目前用藥史", secFamily: "家族病史", secVaccine: "疫苗接種紀錄",
+                footerText: "MyHealth Passport - 請將此頁面截圖或儲存於手機，以備海外醫療求助時使用。"
+            },
+            en: {
+                appTitle: "MyHealth Passport", appSub: "Personal Portable Medical Record",
+                btnEditAll: "Edit All Info", btnSave: "Save All Info", btnPrint: "Print / Save PDF", btnAdd: "Add Item",
+                tabBasic: "🚨 Basic & Emergency", tabMedical: "🏥 Diseases & Surgery", tabMedication: "💊 Meds & Vaccines", tabFamily: "🧬 Family History", tabAll: "📋 Show All",
+                secPersonal: "Personal Information", lblName: "Full Name", lblDOB: "Date of Birth", lblBlood: "Blood Type", lblContact: "Emergency Contact",
+                secAllergies: "Allergies", secHistory: "Medical History", secSurgery: "Surgical History",
+                secMedication: "Current Medications", secFamily: "Family History", secVaccine: "Vaccination Record",
+                footerText: "MyHealth Passport - Save or screenshot this page for international medical emergencies."
+            },
+            ja: {
+                appTitle: "携帯用電子カルテ", appSub: "MyHealth Passport - 緊急医療情報カード",
+                btnEditAll: "全データを編集", btnSave: "全データを保存", btnPrint: "印刷 / PDF保存", btnAdd: "項目を追加",
+                tabBasic: "🚨 基本・緊急", tabMedical: "🏥 病歴・手術", tabMedication: "💊 薬・予防接種", tabFamily: "🧬 家族病歴", tabAll: "📋 すべて表示",
+                secPersonal: "基本個人情報", lblName: "氏名", lblDOB: "生年月日", lblBlood: "血液型", lblContact: "緊急連絡先",
+                secAllergies: "アレルギー歴", secHistory: "病歴・持病", secSurgery: "手術・入院歴",
+                secMedication: "現在服用中の薬", secFamily: "家族病歴", secVaccine: "予防接種歴",
+                footerText: "MyHealth Passport - 海外旅行や緊急時に備えて保存またはスクリーンショットをご利用ください。"
+            },
+            ko: {
+                appTitle: "휴대용 전자 진료기록", appSub: "MyHealth Passport - 응급 의료 정보 카드",
+                btnEditAll: "모든 정보 수정", btnSave: "모든 정보 저장", btnPrint: "인쇄 / PDF 저장", btnAdd: "항목 추가",
+                tabBasic: "🚨 기본 및 응급", tabMedical: "🏥 질환 및 수술", tabMedication: "💊 약물 및 백신", tabFamily: "🧬 가족력", tabAll: "📋 전체 보기",
+                secPersonal: "개인 정보", lblName: "성명", lblDOB: "생년월일", lblBlood: "혈액형", lblContact: "비상 연락처",
+                secAllergies: "알레르기 정보", secHistory: "병력 / 만성 질환", secSurgery: "수술 및 입원 기록",
+                secMedication: "복용 중인 약물", secFamily: "가족력", secVaccine: "백신 접종 기록",
+                footerText: "MyHealth Passport - 해외 여행 및 응급 상황을 위해 화면을 캡처하거나 저장하세요."
+            },
+            vi: {
+                appTitle: "Hồ Sơ Y Tế Cá Nhân", appSub: "MyHealth Passport - Thẻ Thông Tin Y Tế Khẩn Cấp",
+                btnEditAll: "Sửa tất cả", btnSave: "Lưu tất cả", btnPrint: "In / Lưu PDF", btnAdd: "Thêm mục",
+                tabBasic: "🚨 Cơ bản & Khẩn cấp", tabMedical: "🏥 Bệnh lý & Phẫu thuật", tabMedication: "💊 Thuốc & Tiêm chủng", tabFamily: "🧬 Tiền sử gia đình", tabAll: "📋 Hiển thị tất cả",
+                secPersonal: "Thông Tin Cá Nhân", lblName: "Họ và Tên", lblDOB: "Ngày Sinh", lblBlood: "Nhóm Máu", lblContact: "Liên Hệ Khẩn Cấp",
+                secAllergies: "Lịch Sử Dị Ứng", secHistory: "Tiền Sử Bệnh", secSurgery: "Lịch Sử Phẫu Thuật",
+                secMedication: "Thuốc Đang Sử Dụng", secFamily: "Tiền Sử Gia Đình", secVaccine: "Lịch Sử Tiêm Chủng",
+                footerText: "MyHealth Passport - Vui lòng lưu hoặc chụp ảnh màn hình để sử dụng khi cần hỗ trợ y tế ở nước ngoài."
+            }
+        };
+
+        function changeLanguage(lang) {
+            const selectedLang = translations[lang] ? lang : 'zh';
+            const elements = document.querySelectorAll('[data-i18n]');
+            
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[selectedLang][key]) {
+                    element.textContent = translations[selectedLang][key];
+                }
+            });
+
+            localStorage.setItem('preferredLang', selectedLang);
+        }
+
+        window.onload = function() {
+            renderData();
+            const savedLang = localStorage.getItem('preferredLang') || 'zh';
+            document.getElementById('langSelect').value = savedLang;
+            changeLanguage(savedLang);
+        };
+    </script>
+</body>
+</html>
